@@ -34,3 +34,5 @@ export const isDir = async (d: string) => {
     return false;
   }
 }
+
+export const print = console.log;
