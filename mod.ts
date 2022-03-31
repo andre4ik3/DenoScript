@@ -53,4 +53,5 @@ export const isDir = async (d: string) => {
 
 export const print = console.log;
 
-export {PermissionManager} from "./permissions.ts";
+export { Permission } from "./Permission.ts";
+export { PermissionManager } from "./PermissionManager.ts";
