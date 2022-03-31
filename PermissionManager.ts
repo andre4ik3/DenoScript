@@ -21,7 +21,23 @@ function desc(name: PName, o?: MaybeArray<string>): MaybeArray<P> {
  * Abstracts and simplifies permissions to make them easier to use.
  * Examples:
  * 
- * - 
+ * - Wait until permission to read config.toml and write test.log is granted,
+ *   and throw an error if either was rejected
+ * 
+ *  ```ts
+ *  const pm = PermissionManager.getInstance();
+ *  await pm.read("config.toml").write("test.log").ensure();
+ *  ```
+ * 
+ * - Wait until permission to get $HOME and $LANG is granted, save permission to
+ *   an environment variable.
+ * 
+ *  ```ts
+ *  const pm = PermissionManager.getInstance();
+ *  const allowed = await pm.env(["HOME", "LANG"]).settle();
+ *  if (allowed) console.log(Deno.env.get("HOME"), Deno.env.get("LANG"));
+ *  else console.log("No permission.");
+ *  ```
  */
 export class PermissionManager {
   private constructor() {}
@@ -108,16 +124,16 @@ export class PermissionManager {
   }
 
   /**
-   * Waits for all permissions to be responded to.
+   * Waits for all permissions to be responded to. Does not throw any errors.
    * @returns true if all permissions are granted, false otherwise.
    */
-  async wait() {
+  async settle() {
     const promises = await Promise.all(this.permissions.values());
     return !promises.includes(false);
   }
 
   /** Throws an error if any permission is denied. */
   async ensure() {
-    if (!(await this.wait())) throw new Error("Permission denied");
+    if (!(await this.settle())) throw new Error("Permission denied");
   }
 }
