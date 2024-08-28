@@ -55,3 +55,4 @@ export const print = console.log;
 
 export { Permission } from "./Permission.ts";
 export { PermissionManager } from "./PermissionManager.ts";
+export { $ } from "./shell.ts";
